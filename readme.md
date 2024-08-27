@@ -93,7 +93,7 @@ services:
 4. £. This is the way I gave docker cli to httpE2Ban. You have to do the same if you have no other way to access your Nginx, to avoid this, you can use the environment variable `RELOAD_NGINX_CUSTOM_CMD` so httpE2Ban can use this command to access the nginx and send nginx reload. Check if your docker socked and binary are in the same path as docker compose if you have any trouble.
 
 ## Run without docker
-To run withou docker, you should have python3.9 installed.
+To run withou docker, you should have pip3 and python3.9 installed.
 - Create virtual environment
 > python3 -m venv .venv
 - Activate venv
@@ -101,14 +101,15 @@ To run withou docker, you should have python3.9 installed.
 
 > C:\ .venv\Scripts\activate.bat # Window
 - Install packages on virtual environment
-> pip install -r requirements.txt
+> pip3 install -r requirements.txt
 - Create the banned file
 ```sh
-# Should have this pattern when first create
-echo "map $remote_addr $blocked {
+# Should have be exacly like this when first create
+cat <<EOF > $HOME/nginx-httpE2Ban/banned.conf
+map \$remote_addr \$blocked {
     default 0;
-
-}" > $HOME/nginx-httpE2Ban/banned.conf
+}
+EOF
 ```
 - Set the environment variables. Example:
 ```sh
