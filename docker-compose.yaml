@@ -1,0 +1,38 @@
+# Legends
+#¹ You have to map your access log where httpe2ban can use.
+#² You also have to share this file between both containers (nginx & httpe2ban).
+#³ Make sure to change here or is going to use this value as default.
+#£ You need this if you are running using containers, to avoid that, you can use RELOAD_NGINX_CUSTOM_CMD environment variable.
+name: log2ban
+services:
+  nginx:
+    container_name: nginx-container-name
+    volumes:
+      - ./site-example:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./access.log:/var/log/nginx/access.log #¹
+      - ./banned.conf:/etc/nginx/conf.d/banned.conf:ro #²
+    image: nginx
+    ports:
+      - 8080:80
+    environment:
+      - NGINX_PORT=80
+      - TZ=America/Sao_Paulo #³
+  nginx_httpe2ban:
+    container_name: httpe2ban
+    volumes:
+      - ./access.log:/httpe2ban/access.log:ro #¹
+      - ./banned.conf:/httpe2ban/banned.conf:rw #²
+      - /var/run/docker.sock:/var/run/docker.sock #£
+      - /usr/bin/docker:/usr/bin/docker #£
+    image: aleixolucas/nginx-httpe2ban #£
+    environment:
+      TZ: "America/Sao_Paulo" #³
+      POLICY: >
+        {
+            "404": {"limit": 10, "window": 60},
+            "403": {"limit": 5, "window": 60},
+            "401": {"limit": 5, "window": 60}
+        }
+    depends_on:
+        - nginx
