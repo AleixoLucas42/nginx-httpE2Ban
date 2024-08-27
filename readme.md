@@ -104,7 +104,7 @@ To run withou docker, you should have pip3 and python3.9 installed.
 > pip3 install -r requirements.txt
 - Create the banned file
 ```sh
-# Should have be exacly like this when first create
+# Should be exacly like this when first create
 cat <<EOF > $HOME/nginx-httpE2Ban/banned.conf
 map \$remote_addr \$blocked {
     default 0;
