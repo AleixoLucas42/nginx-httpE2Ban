@@ -31,6 +31,7 @@ server {
 ...
 ```
 Finally, the httpE2Ban need to access the Nginx access.log (assuming you're using nginx default log pattern). **With this policy and ban file, the httpE2Ban is going to listen the access.log, populate the ban file and send an reload signal to Nginx.**
+(Using docker, nginx access logs is being showed in httpE2Ban container log)
 
 ## Setup
 For setup you have to do **three steps:**

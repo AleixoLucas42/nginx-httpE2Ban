@@ -10,7 +10,7 @@ services:
     volumes:
       - ./site-example:/usr/share/nginx/html:ro
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./access.log:/var/log/nginx/access.log #¹
+      - ./access.log:/var/log/nginx/access.log:rw #¹
       - ./banned.conf:/etc/nginx/conf.d/banned.conf:ro #²
     image: nginx
     ports:

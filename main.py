@@ -22,6 +22,7 @@ class TailHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if event.src_path == self.nginx_access_log_path:
             for line in self.file:
+                print(line.strip())
                 json_data = self.format_as_json(line)
                 status_code = json_data.get("status_code")
                 if status_code in self.error_config:
@@ -138,6 +139,7 @@ def load_error_config():
 
 
 def test_nginx_reload():
+    time.sleep(5)
     print("Checking nginx reload")
     try:
         reload_nginx()
