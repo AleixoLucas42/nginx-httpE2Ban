@@ -3,7 +3,7 @@
 #² You also have to share this file between both containers (nginx & httpe2ban).
 #³ Make sure to change here or is going to use this value as default.
 #£ You need this if you are running using containers, to avoid that, you can use RELOAD_NGINX_CUSTOM_CMD environment variable.
-name: log2ban
+name: nginx-httpE2Ban
 services:
   nginx:
     container_name: nginx-container-name

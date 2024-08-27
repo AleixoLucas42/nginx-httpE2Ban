@@ -8,7 +8,7 @@ I've tested on these configurations.
 |    27.1.2      |   Fedora 39        | :white_check_mark: |
 
 ## How it works
-You is going to set an configuration policy, that says how much http code an client can have over time. For example:
+You have to set an configuration policy, that says how much http code an client can have over time. For example:
 ```json
 {
     "404": {"limit": 10, "window": 60},
@@ -16,9 +16,9 @@ You is going to set an configuration policy, that says how much http code an cli
     "401": {"limit": 5, "window": 60}
 }
 ```
-In this example, on first line, a client can throw only ten 404 http errors over 60 seconds; on second line only five 403 http error over 60 seconds and so on. Simple, right?
+In this example, on first statement, a client can throw only ten 404 http errors over 60 seconds; on second, only five 403 http error over 60 seconds and so on. Simple, right?
 
-On your `nginx.conf` you'll have to include the [ban file](banned.conf) and a block condition, like this:
+On your `nginx.conf` you'll have to include the [ban file](banned.conf) and a block condition, for exampleS:
 ```lua
 ...
 include /etc/nginx/conf.d/banned.conf;
@@ -37,9 +37,9 @@ For setup you have to do **three steps:**
 
 - Configure an [json policy file](policy.json).
 - Nginx configuration
-  - Configure your nginx to include an [ban file](banned.conf). Here you can find an example on first line of [nginx.conf](nginx.conf).
-  - Configure an condition in your server config to block IPs based on a map in ban file. Here you can find an example on line 6 to 8 on [nginx.conf](nginx.conf).
-- Give access in nginx access logs to httpE2Ban.
+  - Configure your nginx to include the [ban file](banned.conf). Here you can find an example on first line of [nginx.conf](nginx.conf).
+  - Configure an condition in your server config to block IPs based on a map in the ban file. Here you can find an example on line 6 to 8 on [nginx.conf](nginx.conf).
+- Give access in nginx access logs to httpE2Ban using environment variable.
 
 ## Running [docker compose](docker-compose.yaml) example (poc)
 - Download repository
@@ -48,11 +48,12 @@ For setup you have to do **three steps:**
 - Access error page example on http://localhost:8080/401
 - Access error page more than 5 times and you should be blocked
 - Now you can not access no any page on this server.
+- Check the [ban file](banned.conf) and your IP should be there next to an epoch timestamp.
 
 ### Docker compose explained
 Here is an example on a more [complex cenario](https://github.com/AleixoLucas42/homelab/tree/main/proxmox-vms/fedora-server/swarm/nginx).
 ```yaml
-name: log2ban
+name: nginx-httpE2Ban
 services:
   nginx:
     container_name: nginx-container-name
