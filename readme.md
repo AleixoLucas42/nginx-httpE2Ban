@@ -1,5 +1,5 @@
 # httpE2Ban for Nginx
-This is an simple nginx add-on that block connections based on http status. I know that exists a lot of tools like this but I made for my own to be lightier and also, to be as an "first shield" for applications running behind Nginx. The configuration should be simple and mainly you should be using Nginx on a docker container, but also works for a common Nginx instalation.
+This is an simple nginx add-on that block connections based on http status. I know that exists a lot of tools like this but I made for my own to be lightier and also, to be as an "first shield" for applications running behind Nginx. The configuration should be simple and mainly you should be using Nginx on a docker container, but also works for a common Nginx instalation. *Ps: I could do an Nginx with httpE2Ban running inside, but who is going to trust something like this? lol.*
 
 ## Validation
 I've tested on these configurations.
@@ -163,6 +163,18 @@ So the NGINX_LOG_JSON_MAP variable should be:
 NGINX_LOG_JSON_MAP={"ip_address":"remote_addr","datetime":"time_local","request":"request","url":"http_referer","http_version":"server_protocol","status_code":"status","user_agent":"http_user_agent"}
 ```
 
+
+# FAQ
+### Does this work when not using container to run Nginx 
+Yes, you can run Python or use the binary file on [releases](https://github.com/AleixoLucas42/nginx-httpE2Ban/releases)
+### Where is the Nginx container logs?
+The requests logs are redirected to httpE2Ban container, the same log that should out in Nginx container, now is on httpE2Ban container. Why? Because I can't make work in both yet.
+### Can I use if my Nginx log format is different from default?
+You can just use if your log format is default or in json format, without anything else. Just read the 'how to map json' section and you'll be fine.
+### Why not use fail2ban or another similar know tool?
+You can use, maybe you should use, the point of httpE2Ban is the easy way to make work, i'm not doing to replace any tool, just developing to learn.
+### I ran the docker compose and its not accessing the service
+Try to change the port on docker compose file and check if any file was altered after clone the repository.
 
 ## 
 - [Github](https://github.com/AleixoLucas42/nginx-httpE2Ban)

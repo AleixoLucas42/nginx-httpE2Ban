@@ -9,6 +9,7 @@ from watchdog.events import FileSystemEventHandler
 from datetime import datetime, timedelta
 import pytz
 import logging
+from tabulate import tabulate
 
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO"),
@@ -91,6 +92,26 @@ class TailHandler(FileSystemEventHandler):
             )
             block_ip(ip)
 
+
+def show_resume():
+    if "RELOAD_NGINX_CUSTOM_CMD" in os.environ:
+        reload_mode = os.environ["RELOAD_NGINX_CUSTOM_CMD"]
+    elif "NGINX_CONTAINER_NAME" in os.environ:
+        reload_mode = f"Reload container {os.environ['NGINX_CONTAINER_NAME']}"
+    else:
+        reload_mode = "Reload first container running Nginx"
+    resume = [
+        ("Nginx reload mode", f"{reload_mode}"),
+        ("LOG_LEVEL", os.getenv('LOG_LEVEL', 'INFO')),
+        ("Timezone", os.getenv('TZ', 'America/Sao_Paulo')),
+        ("Nginx log path", os.getenv('NGINX_LOG_PATH', './access.log')),
+        ("Ban config file", os.getenv('BANNED_CONF_FILE', './banned.conf')),
+        ("Policy variable", True if 'POLICY' in os.environ else False ),
+        ("Policy file", './policy.json' if 'POLICY_FILE' not in os.environ and 'POLICY' not in os.environ else 'None'),
+        ("Startup delay", f"{os.getenv('STARTUP_DELAY',5)}"),
+        ("Nginx json map", True if 'NGINX_LOG_JSON_MAP' in os.environ else False),
+    ]
+    return resume
 
 def reload_nginx():
     CUSTOM_CMD = os.getenv("RELOAD_NGINX_CUSTOM_CMD", None)
@@ -190,6 +211,7 @@ def follow(nginx_access_log_path, error_config):
 
 
 if __name__ == "__main__":
+    logging.info("\n" + tabulate(show_resume(), tablefmt="fancy_grid"))
     log_path = os.getenv("NGINX_LOG_PATH", "access.log")
     error_config = load_error_config()
     test_nginx_reload()
