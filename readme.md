@@ -134,6 +134,7 @@ export BANNED_CONF_FILE="$HOME/nginx-httpE2Ban/banned.conf"
 | POLICY | {"404": {"limit": 10, "window": 60,...}} | No | Policy variable, you can also use an file if get hard to mantain |
 | POLICY_FILE | ./policy.json | Yes | Absolute path for policy file. |
 | STARTUP_DELAY | 10 | No | How long to wait until start httpE2Ban. Default value is 5. |
+| LOG_LEVEL | DEBUG | No | Possibilities: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. Default is `INFO`|
 | NGINX_LOG_JSON_MAP | {"ip_address":"remote_addr"...} | No | If your log format is not in default and you are using json as log, this is an workaround to use httpE2Ban. |
 
 ## How to map log format when using json

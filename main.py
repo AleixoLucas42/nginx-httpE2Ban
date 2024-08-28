@@ -8,6 +8,13 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from datetime import datetime, timedelta
 import pytz
+import logging
+
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO"),
+    format="%(asctime)s [%(levelname)s] 1#1: %(message)s",
+    datefmt="%Y/%m/%d %H:%M:%S",
+)
 
 
 class TailHandler(FileSystemEventHandler):
@@ -22,7 +29,7 @@ class TailHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if event.src_path == self.nginx_access_log_path:
             for line in self.file:
-                print(line.strip())  # let as print
+                print(line.strip())
                 json_data = self.format_as_json(line)
                 status_code = json_data.get("status_code")
                 if status_code in self.error_config:
@@ -34,7 +41,7 @@ class TailHandler(FileSystemEventHandler):
             parts = line.split()
 
             if len(parts) < 9:
-                print(line)
+                logging.error(f"Invalid line: {line}")
                 return {"error": "Invalid line"}
 
             log_data = {
@@ -46,11 +53,12 @@ class TailHandler(FileSystemEventHandler):
                 "status_code": parts[8],
                 "user_agent": " ".join(parts[9:]),  # Merge rest with user agent
             }
+            return log_data
         try:
             nginx_log_map = json.loads(nginx_json_log_map)
             log_received = json.loads(line)
         except Exception as e:
-            print(f"Check your NGINX_LOG_JSON_MAP variable, {e}")
+            logging.error(f"Check your NGINX_LOG_JSON_MAP variable, {e}")
         log_data = {
             "ip_address": log_received[nginx_log_map["ip_address"]],
             "datetime": log_received[nginx_log_map["datetime"]],
@@ -78,15 +86,15 @@ class TailHandler(FileSystemEventHandler):
             self.errors[ip][status_code].popleft()
 
         if len(self.errors[ip][status_code]) > error_limit:
-            print(
-                f"Alert: {ip} has exceeded the error limit for status code {status_code} with {len(self.errors[ip][status_code])} errors."
+            logging.warning(
+                f"{ip} has exceeded the error limit for status code {status_code} with {len(self.errors[ip][status_code])} errors"
             )
             block_ip(ip)
 
 
 def reload_nginx():
     CUSTOM_CMD = os.getenv("RELOAD_NGINX_CUSTOM_CMD", None)
-    print("Senging reload signal to nginx")
+    logging.info("Sending reload signal to nginx")
     try:
         if CUSTOM_CMD == None:
             nginx_container_name = os.getenv("NGINX_CONTAINER_NAME", None)
@@ -96,25 +104,27 @@ def reload_nginx():
                     shell=True,
                     text=True,
                 ).strip()
-                print(f"Reloading first nginx container returned: '{container_id}'")
+                logging.debug(
+                    f"Reloading first nginx container returned: '{container_id}'"
+                )
                 subprocess.run(
                     ["docker", "exec", container_id, "nginx", "-s", "reload"],
                     check=True,
                 )
-                print("Nginx reloaded successfully!")
+                logging.info("Nginx reloaded successfully!")
                 return True
-            print(f"Restarting nginx on container {nginx_container_name}")
+            logging.debug(f"Restarting nginx on container {nginx_container_name}")
             subprocess.run(
                 ["docker", "exec", nginx_container_name, "nginx", "-s", "reload"],
                 check=True,
             )
-            print("Nginx reloaded successfully!")
+            logging.info("Nginx reloaded successfully!")
             return True
-        print(f"Using nginx custom command: {CUSTOM_CMD}")
+        logging.info(f"Using nginx custom command: {CUSTOM_CMD}")
         subprocess.run(CUSTOM_CMD.split(), check=True)
-        print("Nginx reloaded successfully!")
+        logging.info("Nginx reloaded successfully!")
     except subprocess.CalledProcessError as e:
-        print(f"Failed to reload Nginx: {e}")
+        logging.critical(f"Failed to reload Nginx: {e}")
         exit(1)
 
 
@@ -126,7 +136,7 @@ def is_ip_on_file(ip):
             if search_ip.findall(content):
                 return True
     except Exception as e:
-        print(e)
+        logging.error(f"Failed to check ban file, {e}")
     return False
 
 
@@ -143,7 +153,7 @@ def block_ip(ip):
                 banned_file.writelines(new_content)
             reload_nginx()
         except Exception as e:
-            print(e)
+            logging.error(f"Some error occur while trying to block IP: '{ip}', {e}")
 
 
 def load_error_config():
@@ -157,11 +167,11 @@ def load_error_config():
 
 def test_nginx_reload():
     time.sleep(os.getenv("STARTUP_DELAY", 5))
-    print("Checking nginx reload")
+    logging.debug("Checking nginx reload")
     try:
         reload_nginx()
     except Exception as e:
-        print(e)
+        logging.critical("Some error occurred while trying to reload Nginx")
         exit(1)
 
 
