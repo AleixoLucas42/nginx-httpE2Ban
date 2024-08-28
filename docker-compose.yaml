@@ -7,7 +7,7 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./access.log:/var/log/nginx/access.log:rw
       - ./banned.conf:/etc/nginx/conf.d/banned.conf:ro
-      #- ./nginx_main.conf:/etc/nginx/nginx.conf # If you are using log format as json, take a look at this file
+      # - ./nginx_main.conf:/etc/nginx/nginx.conf # If you are using log format as json, take a look at this file
     image: nginx
     ports:
       - 8080:80
@@ -30,6 +30,7 @@ services:
             "403": {"limit": 5, "window": 60},
             "401": {"limit": 5, "window": 60}
         }
+      LOG_LEVEL: "INFO"
       # NGINX_LOG_JSON_MAP: >
       #   {
       #     "ip_address":"remote_addr",

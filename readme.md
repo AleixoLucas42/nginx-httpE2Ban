@@ -175,6 +175,8 @@ You can just use if your log format is default or in json format, without anythi
 You can use, maybe you should use, the point of httpE2Ban is the easy way to make work, i'm not doing to replace any tool, just developing to learn.
 ### I ran the docker compose and its not accessing the service
 Try to change the port on docker compose file and check if any file was altered after clone the repository.
+### Can the logs be more or less detailed?
+Yes you can use the environment variable LOG_LEVEL to change logs, in production I recomend to use value `ERROR` or `CRITICAL`.
 
 ## 
 - [Github](https://github.com/AleixoLucas42/nginx-httpE2Ban)
