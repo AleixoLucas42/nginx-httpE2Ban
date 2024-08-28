@@ -44,7 +44,7 @@ For setup you have to do **three steps:**
   - You can run using my [docker image](https://hub.docker.com/repository/docker/aleixolucas/nginx-httpe2ban/) or using Python3
 
 ## Running [docker compose](docker-compose.yaml) example (poc)
-- Download repository
+- Download [repository](https://github.com/AleixoLucas42/nginx-httpE2Ban)
 - On repository root, run `docker compose up`
 - Access site example on http://localhost:8080
 - Access error page example on http://localhost:8080/401
