@@ -140,7 +140,7 @@ export BANNED_CONF_FILE="$HOME/nginx-httpE2Ban/banned.conf"
 If your log format is not the default format that Nginx provide and you are using a json format, you can still use httpE2Ban, you just need to map some information that httpE2Ban needs. Your log should not contain nothing besides json and should start and finish with brackets. **If you are not using one of these formats (default/json) the only way to make it work is change the source code and rebuild the httpE2Ban.**
 
 #### Map example
-The map is done using NGINX_LOG_JSON_MAP environment variable, you can find an example in a commented line on [docker compose](docker-compose.yaml) file.
+The map is done using NGINX_LOG_JSON_MAP environment variable, in a key value json format, you can find an example in a commented line on [docker compose](docker-compose.yaml) file.
 httpE2Ban needs these information:
 |    Name      |                           Description                              |
 |------------  | -----------------------------------------------------------------  | 
@@ -152,11 +152,11 @@ httpE2Ban needs these information:
 | status_code  | The request status code present in log                             |
 | user_agent   | The user agend that client used to reach Nginx                     |
 
-If my Nginx log is like:
+If the Nginx log line is like:
 ```json
 {"msec":"1724864433.591","connection":"1","connection_requests":"1","pid":"42","request_id":"bf76bf04c6a423ed20bd2cfb49c5913a","request_length":"837","remote_addr":"172.18.0.1","remote_user":"-","remote_port":"49094","time_local":"28/Aug/2024:14:00:33 -0300","time_iso8601":"2024-08-28T14:00:33-03:00","request":"GET / HTTP/1.1","request_uri":"/","args":"-","status":"304","body_bytes_sent":"0","bytes_sent":"179","http_referer":"-","http_user_agent":"Mozilla/5.0 (X11; Linux x86_64; rv:129.0) Gecko/20100101 Firefox/129.0","http_x_forwarded_for":"-","http_host":"localhost:8080","server_name":"site-example.com","request_time":"0.000","upstream":"-","upstream_connect_time":"-","upstream_header_time":"-","upstream_response_time":"-","upstream_response_length":"-","upstream_cache_status":"-","ssl_protocol":"-","ssl_cipher":"-","scheme":"http","request_method":"GET","server_protocol":"HTTP/1.1","pipe":".","gzip_ratio":"-","http_cf_ray":"-"}
 ```
-So my NGINX_LOG_JSON_MAP variable should be:
+So the NGINX_LOG_JSON_MAP variable should be:
 ```bash
 NGINX_LOG_JSON_MAP={"ip_address":"remote_addr","datetime":"time_local","request":"request","url":"http_referer","http_version":"server_protocol","status_code":"status","user_agent":"http_user_agent"}
 ```
