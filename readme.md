@@ -41,6 +41,7 @@ For setup you have to do **three steps:**
   - Configure your nginx to include the [ban file](banned.conf). Here you can find an example on first line of [nginx.conf](nginx.conf).
   - Configure an condition in your server config to block IPs based on a map in the ban file. Here you can find an example on line 6 to 8 on [nginx.conf](nginx.conf).
 - Give access in nginx access logs to httpE2Ban using environment variable.
+  - You can run using my [docker image](https://hub.docker.com/repository/docker/aleixolucas/nginx-httpe2ban/) or using Python3
 
 ## Running [docker compose](docker-compose.yaml) example (poc)
 - Download repository
@@ -161,3 +162,8 @@ So the NGINX_LOG_JSON_MAP variable should be:
 ```bash
 NGINX_LOG_JSON_MAP={"ip_address":"remote_addr","datetime":"time_local","request":"request","url":"http_referer","http_version":"server_protocol","status_code":"status","user_agent":"http_user_agent"}
 ```
+
+
+## 
+- [Github](https://github.com/AleixoLucas42/nginx-httpE2Ban)
+- [Dockerhub](https://hub.docker.com/repository/docker/aleixolucas/nginx-httpe2ban/)
