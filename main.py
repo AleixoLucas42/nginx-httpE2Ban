@@ -22,26 +22,43 @@ class TailHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if event.src_path == self.nginx_access_log_path:
             for line in self.file:
-                print(line.strip())
+                print(line.strip())  # let as print
                 json_data = self.format_as_json(line)
                 status_code = json_data.get("status_code")
                 if status_code in self.error_config:
                     self.record_error(json_data, status_code)
 
     def format_as_json(self, line):
-        parts = line.split()
+        nginx_json_log_map = os.getenv("NGINX_LOG_JSON_MAP", None)
+        if nginx_json_log_map == None:
+            parts = line.split()
 
-        if len(parts) < 9:
-            return {"error": "Invalid line"}
+            if len(parts) < 9:
+                print(line)
+                return {"error": "Invalid line"}
 
+            log_data = {
+                "ip_address": parts[0],
+                "datetime": f"{parts[3]} {parts[4]}".strip("[]"),
+                "request": parts[5].strip('"'),
+                "url": parts[6],
+                "http_version": parts[7].strip('"'),
+                "status_code": parts[8],
+                "user_agent": " ".join(parts[9:]),  # Merge rest with user agent
+            }
+        try:
+            nginx_log_map = json.loads(nginx_json_log_map)
+            log_received = json.loads(line)
+        except Exception as e:
+            print(f"Check your NGINX_LOG_JSON_MAP variable, {e}")
         log_data = {
-            "ip_address": parts[0],
-            "datetime": f"{parts[3]} {parts[4]}".strip("[]"),
-            "request": parts[5].strip('"'),
-            "url": parts[6],
-            "http_version": parts[7].strip('"'),
-            "status_code": parts[8],
-            "user_agent": " ".join(parts[9:]),  # Merge rest with user agent
+            "ip_address": log_received[nginx_log_map["ip_address"]],
+            "datetime": log_received[nginx_log_map["datetime"]],
+            "request": log_received[nginx_log_map["request"]],
+            "url": log_received[nginx_log_map["url"]],
+            "http_version": log_received[nginx_log_map["http_version"]],
+            "status_code": log_received[nginx_log_map["status_code"]],
+            "user_agent": log_received[nginx_log_map["user_agent"]],
         }
         return log_data
 
@@ -131,7 +148,7 @@ def block_ip(ip):
 
 def load_error_config():
     policy = os.getenv("POLICY", None)
-    if (policy):
+    if policy:
         return json.loads(policy)
     else:
         with open(os.getenv("POLICY_FILE", "policy.json"), "r") as file:
@@ -139,7 +156,7 @@ def load_error_config():
 
 
 def test_nginx_reload():
-    time.sleep(5)
+    time.sleep(os.getenv("STARTUP_DELAY", 5))
     print("Checking nginx reload")
     try:
         reload_nginx()
