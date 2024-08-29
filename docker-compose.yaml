@@ -8,7 +8,7 @@ services:
       - ./access.log:/var/log/nginx/access.log:rw
       - ./banned.conf:/etc/nginx/conf.d/banned.conf:ro
       # - ./nginx_main.conf:/etc/nginx/nginx.conf # If you are using log format as json, take a look at this file
-    image: nginx
+    image: nginx:latest
     ports:
       - 8080:80
     environment:

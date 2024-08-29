@@ -32,7 +32,7 @@ class TailHandler(FileSystemEventHandler):
         if event.src_path == self.nginx_access_log_path:
             for line in self.file:
                 print(line.strip())
-                json_data = self.format_as_json(line)
+                json_data = self.format_as_json(line.strip())
                 status_code = json_data.get("status_code")
                 if status_code in self.error_config:
                     self.record_error(json_data, status_code)
@@ -60,6 +60,8 @@ class TailHandler(FileSystemEventHandler):
             nginx_log_map = json.loads(nginx_json_log_map)
             log_received = json.loads(line)
         except Exception as e:
+            logging.debug(f"Log mapping: {nginx_json_log_map}")
+            logging.debug(f"Nginx log received: {log_received}")
             logging.error(f"Check your NGINX_LOG_JSON_MAP variable, {e}")
         log_data = {
             "ip_address": log_received[nginx_log_map["ip_address"]],
