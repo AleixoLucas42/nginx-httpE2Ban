@@ -58,7 +58,7 @@ class TailHandler(FileSystemEventHandler):
             return log_data
         try:
             nginx_log_map = json.loads(nginx_json_log_map)
-            log_received = json.loads(line.replace("\\","\\\\"))
+            log_received = json.loads(line.replace("\\", "\\\\"))
         except Exception as e:
             logging.debug(f"Log mapping: {nginx_json_log_map}")
             logging.debug(f"Nginx log received: {line}")
