@@ -1,4 +1,4 @@
-name: nginx-httpE2Ban
+name: nginx-httpe2ban
 services:
   nginx:
     container_name: nginx-container-name
