@@ -32,6 +32,7 @@ services:
         }
       LOG_LEVEL: "INFO"
       BLOCK_TTL: 120
+      user: "${UID}:${GID}"
       # NGINX_LOG_JSON_MAP: >
       #   {
       #     "ip_address":"remote_addr",
