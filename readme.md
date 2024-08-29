@@ -166,17 +166,20 @@ NGINX_LOG_JSON_MAP={"ip_address":"remote_addr","datetime":"time_local","request"
 
 # FAQ
 ### Does this work when not using container to run Nginx 
-Yes, you can run Python or use the binary file on [releases](https://github.com/AleixoLucas42/nginx-httpE2Ban/releases)
+- Yes, you can run Python or use the binary file on [releases](https://github.com/AleixoLucas42/nginx-httpE2Ban/releases)
 ### Where is the Nginx container logs?
-The requests logs are redirected to httpE2Ban container, the same log that should out in Nginx container, now is on httpE2Ban container. Why? Because I can't make work in both yet.
+- The requests logs are redirected to httpE2Ban container, the same log that should out in Nginx container, now is on httpE2Ban container. Why? Because I can't make work in both yet.
 ### Can I use if my Nginx log format is different from default?
-You can just use if your log format is default or in json format, without anything else. Just read the 'how to map json' section and you'll be fine.
+- You can just use if your log format is default or in json format, without anything else. Just read the 'how to map json' section and you'll be fine.
 ### Why not use fail2ban or another similar know tool?
-You can use, maybe you should use, the point of httpE2Ban is the easy way to make work, i'm not doing to replace any tool, just developing to learn.
+- You can use, maybe you should use, the point of httpE2Ban is the easy way to make work, i'm not doing to replace any tool, just developing to learn.
 ### I ran the docker compose and its not accessing the service
-Try to change the port on docker compose file and check if any file was altered after clone the repository.
+- Try to change the port on docker compose file and check if any file was altered after clone the repository.
 ### Can the logs be more or less detailed?
-Yes you can use the environment variable LOG_LEVEL to change logs, in production I recomend to use value `ERROR` or `CRITICAL`.
+- Yes you can use the environment variable LOG_LEVEL to change logs, in production I recomend to use value `ERROR` or `CRITICAL`.
+### What is the meaning of httpE2Ban?
+- It's just "ban when get some http Error".
+
 
 ## 
 - [Github](https://github.com/AleixoLucas42/nginx-httpE2Ban)
