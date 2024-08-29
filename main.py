@@ -58,10 +58,10 @@ class TailHandler(FileSystemEventHandler):
             return log_data
         try:
             nginx_log_map = json.loads(nginx_json_log_map)
-            log_received = json.loads(line)
+            log_received = json.loads(line.replace("\\","\\\\"))
         except Exception as e:
             logging.debug(f"Log mapping: {nginx_json_log_map}")
-            logging.debug(f"Nginx log received: {log_received}")
+            logging.debug(f"Nginx log received: {line}")
             logging.error(f"Check your NGINX_LOG_JSON_MAP variable, {e}")
         log_data = {
             "ip_address": log_received[nginx_log_map["ip_address"]],
@@ -146,7 +146,7 @@ def show_resume():
                 else "None"
             ),
         ),
-        ("Startup delay", f"{os.getenv('STARTUP_DELAY',5)}"),
+        ("Startup delay", f"{int(os.getenv('STARTUP_DELAY', 5))}"),
         ("Nginx json map", True if "NGINX_LOG_JSON_MAP" in os.environ else False),
     ]
     return resume
@@ -226,7 +226,7 @@ def load_error_config():
 
 
 def test_nginx_reload():
-    time.sleep(os.getenv("STARTUP_DELAY", 5))
+    time.sleep(int(os.getenv("STARTUP_DELAY", 5)))
     logging.debug("Checking nginx reload")
     try:
         reload_nginx()
