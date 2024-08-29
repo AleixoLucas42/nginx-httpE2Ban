@@ -158,12 +158,12 @@ def reload_nginx():
             nginx_container_name = os.getenv("NGINX_CONTAINER_NAME", None)
             if nginx_container_name == None:
                 container_id = subprocess.check_output(
-                    "docker container ls --filter 'ancestor=nginx' --format '{{.ID}}'",
+                    "docker container ls | grep 'nginx:latest' | awk '{print $1}'",
                     shell=True,
                     text=True,
                 ).strip()
                 logging.debug(
-                    f"Reloading first nginx container returned: '{container_id}'"
+                    f"Reloading first latest nginx container returned: '{container_id}'"
                 )
                 subprocess.run(
                     ["docker", "exec", container_id, "nginx", "-s", "reload"],

@@ -131,7 +131,7 @@ export BANNED_CONF_FILE="$HOME/nginx-httpE2Ban/banned.conf"
 | Name | Example | Required |Description |
 |-------------------| ------- | --------------------------------|------------------|
 | TZ | America/Sao_Paulo | No | Your Timezone. If not set, is going to use America/Sao_Paulo. |
-| NGINX_CONTAINER_NAME | nginx-prod | No | Nginx container name. If not set, httpE2Ban will restart the first container that is running Nginx image. |
+| NGINX_CONTAINER_NAME | nginx-prod | No | Nginx container name. If not set, httpE2Ban will restart the first container that is running nginx:latest image. |
 | RELOAD_NGINX_CUSTOM_CMD | ssh user@123.456.789.0 "nginx -s reload" | No | Custom command to restart Nginx. If set, won't restart Nginx using docker.  |
 | NGINX_LOG_PATH | ./access.log | Yes | Absolute path for file containing Nginx `access.log`. If not set is going to use `acces.log` as default. |
 | BANNED_CONF_FILE | ./banned.conf | No | Absolute path for file containing blocked IPs. If not set, is going to use `banned.conf` as default. |
