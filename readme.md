@@ -51,6 +51,7 @@ For setup you have to do **three steps:**
 - Access error page more than 5 times and you should be blocked
 - Now you can not access no any page on this server.
 - Check the [ban file](banned.conf) and your IP should be there next to an epoch timestamp.
+- If you wait 2 minutes, the ip should be unbanned due the `BLOCK_TTL` environment variable value.
 
 ### Docker compose explained
 Here is an example on a more [complex cenario](https://github.com/AleixoLucas42/homelab/tree/main/proxmox-vms/fedora-server/swarm/nginx).
@@ -86,6 +87,8 @@ services:
             "403": {"limit": 5, "window": 60},
             "401": {"limit": 5, "window": 60}
         }
+      LOG_LEVEL: "INFO"
+      BLOCK_TTL: 7200
     depends_on:
         - nginx
 ```
@@ -128,15 +131,18 @@ export BANNED_CONF_FILE="$HOME/nginx-httpE2Ban/banned.conf"
 | Name | Example | Required |Description |
 |-------------------| ------- | --------------------------------|------------------|
 | TZ | America/Sao_Paulo | No | Your Timezone. If not set, is going to use America/Sao_Paulo. |
-| NGINX_CONTAINER_NAME | nginx-prod | No | Nginx container name. If not set, httpE2Ban will restart the first container that is running Nginx image |
-| RELOAD_NGINX_CUSTOM_CMD | ssh user@123.456.789.0 "nginx -s reload" | No | Custom command to restart Nginx. If set, won't restart Nginx using docker  |
-| NGINX_LOG_PATH | ./access.log | Yes | Absolute path for file containing Nginx `access.log`. If not set is going to use acces.log |
-| BANNED_CONF_FILE | ./banned.conf | No | Absolute path for file containing blocked IPs. If not set, is going to use `banned.conf` as default |
-| POLICY | {"404": {"limit": 10, "window": 60,...}} | No | Policy variable, you can also use an file if get hard to mantain |
+| NGINX_CONTAINER_NAME | nginx-prod | No | Nginx container name. If not set, httpE2Ban will restart the first container that is running Nginx image. |
+| RELOAD_NGINX_CUSTOM_CMD | ssh user@123.456.789.0 "nginx -s reload" | No | Custom command to restart Nginx. If set, won't restart Nginx using docker.  |
+| NGINX_LOG_PATH | ./access.log | Yes | Absolute path for file containing Nginx `access.log`. If not set is going to use `acces.log` as default. |
+| BANNED_CONF_FILE | ./banned.conf | No | Absolute path for file containing blocked IPs. If not set, is going to use `banned.conf` as default. |
+| POLICY | {"404": {"limit": 10, "window": 60,...}} | No | Policy variable, you can also use an file if get hard to mantain. |
 | POLICY_FILE | ./policy.json | Yes | Absolute path for policy file. |
-| STARTUP_DELAY | 10 | No | How long to wait until start httpE2Ban. Default value is 5. |
-| LOG_LEVEL | DEBUG | No | Possibilities: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. Default is `INFO`|
+| STARTUP_DELAY | 10 | No | In seconds, how long to wait until start httpE2Ban. Default value is 5. |
+| LOG_LEVEL | DEBUG | No | Possibilities: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. Default is `INFO`.|
 | NGINX_LOG_JSON_MAP | {"ip_address":"remote_addr"...} | No | If your log format is not in default and you are using json as log, this is an workaround to use httpE2Ban. |
+| BLOCK_TTL_CHECK_DELAY | 60 | No | In seconds, how long to wait to unban an IP. Default is `60`. |
+| BLOCK_TTL | 7200 | No | The time the IP will be blocked. If not configured, the `block is permanent`. |
+
 
 ## How to map log format when using json
 If your log format is not the default format that Nginx provide and you are using a json format, you can still use httpE2Ban, you just need to map some information that httpE2Ban needs. Your log should not contain nothing besides json and should start and finish with brackets. **If you are not using one of these formats (default/json) the only way to make it work is change the source code and rebuild the httpE2Ban.**
@@ -179,7 +185,6 @@ NGINX_LOG_JSON_MAP={"ip_address":"remote_addr","datetime":"time_local","request"
 - Yes you can use the environment variable LOG_LEVEL to change logs, in production I recomend to use value `ERROR` or `CRITICAL`.
 ### What is the meaning of httpE2Ban?
 - It's just "ban when get some http Error that came from request status code".
-
 
 ## 
 - [Github](https://github.com/AleixoLucas42/nginx-httpE2Ban)

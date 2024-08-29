@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 import pytz
 import logging
 from tabulate import tabulate
+from multiprocessing import Process
 
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO"),
@@ -91,6 +92,33 @@ class TailHandler(FileSystemEventHandler):
                 f"{ip} has exceeded the error limit for status code {status_code} with {len(self.errors[ip][status_code])} errors"
             )
             block_ip(ip)
+
+def unban_ip():
+    if "BLOCK_TTL" in os.environ:
+        logging.info("Starting ban file check")
+        while True:
+            reload = False
+            with open(os.getenv("BANNED_CONF_FILE", "./banned.conf"), "r") as ban_file:
+                lines = ban_file.readlines()
+                for i, line in enumerate(lines[2:], start=2):
+                    if "}" in line:
+                        logging.info("Ban check file done")
+                        break
+                    client = line.split()
+                    ip = client[0]
+                    ttl = int(client[2].strip("#"))
+                    epoch_now = int(time.time())
+                    exp = ttl + int(os.environ["BLOCK_TTL"])
+                    if exp < epoch_now:
+                        lines.pop(i)
+                        logging.info(f"IP {ip} unbanned due to expired TTL")
+                        reload = True
+
+            with open(os.getenv("BANNED_CONF_FILE", "./banned.conf"), "w") as ban_file:
+                ban_file.writelines(lines)
+            if reload:
+                reload_nginx()
+            time.sleep(int(os.getenv("BLOCK_TTL_CHECK_DELAY", 60)))
 
 
 def show_resume():
@@ -211,6 +239,8 @@ def follow(nginx_access_log_path, error_config):
 
 
 if __name__ == "__main__":
+    cleaner_process = Process(target=unban_ip)
+    cleaner_process.start()
     logging.info("\n" + tabulate(show_resume(), tablefmt="fancy_grid"))
     log_path = os.getenv("NGINX_LOG_PATH", "access.log")
     error_config = load_error_config()

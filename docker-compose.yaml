@@ -31,6 +31,7 @@ services:
             "401": {"limit": 5, "window": 60}
         }
       LOG_LEVEL: "INFO"
+      BLOCK_TTL: 120
       # NGINX_LOG_JSON_MAP: >
       #   {
       #     "ip_address":"remote_addr",
