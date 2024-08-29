@@ -178,7 +178,7 @@ NGINX_LOG_JSON_MAP={"ip_address":"remote_addr","datetime":"time_local","request"
 ### Can the logs be more or less detailed?
 - Yes you can use the environment variable LOG_LEVEL to change logs, in production I recomend to use value `ERROR` or `CRITICAL`.
 ### What is the meaning of httpE2Ban?
-- It's just "ban when get some http Error".
+- It's just "ban when get some http Error that came from request status code".
 
 
 ## 
