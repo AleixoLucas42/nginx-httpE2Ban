@@ -16,6 +16,7 @@ services:
       - TZ=America/Sao_Paulo #³
   nginx_httpe2ban:
     container_name: httpe2ban
+    user: "${UID}:${GID}"
     volumes:
       - ./access.log:/httpe2ban/access.log:ro
       - ./banned.conf:/httpe2ban/banned.conf:rw
@@ -32,7 +33,6 @@ services:
         }
       LOG_LEVEL: "INFO"
       BLOCK_TTL: 120
-      user: "${UID}:${GID}"
       # NGINX_LOG_JSON_MAP: >
       #   {
       #     "ip_address":"remote_addr",
@@ -43,5 +43,7 @@ services:
       #     "status_code":"status",
       #     "user_agent":"http_user_agent"
       #   }
+      UID: ${UID}
+      GID: ${GID}
     depends_on:
         - nginx
