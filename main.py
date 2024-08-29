@@ -93,6 +93,7 @@ class TailHandler(FileSystemEventHandler):
             )
             block_ip(ip)
 
+
 def unban_ip():
     if "BLOCK_TTL" in os.environ:
         logging.info("Starting ban file check")
@@ -130,16 +131,24 @@ def show_resume():
         reload_mode = "Reload first container running Nginx"
     resume = [
         ("Nginx reload mode", f"{reload_mode}"),
-        ("LOG_LEVEL", os.getenv('LOG_LEVEL', 'INFO')),
-        ("Timezone", os.getenv('TZ', 'America/Sao_Paulo')),
-        ("Nginx log path", os.getenv('NGINX_LOG_PATH', './access.log')),
-        ("Ban config file", os.getenv('BANNED_CONF_FILE', './banned.conf')),
-        ("Policy variable", True if 'POLICY' in os.environ else False ),
-        ("Policy file", './policy.json' if 'POLICY_FILE' not in os.environ and 'POLICY' not in os.environ else 'None'),
+        ("LOG_LEVEL", os.getenv("LOG_LEVEL", "INFO")),
+        ("Timezone", os.getenv("TZ", "America/Sao_Paulo")),
+        ("Nginx log path", os.getenv("NGINX_LOG_PATH", "./access.log")),
+        ("Ban config file", os.getenv("BANNED_CONF_FILE", "./banned.conf")),
+        ("Policy variable", True if "POLICY" in os.environ else False),
+        (
+            "Policy file",
+            (
+                "./policy.json"
+                if "POLICY_FILE" not in os.environ and "POLICY" not in os.environ
+                else "None"
+            ),
+        ),
         ("Startup delay", f"{os.getenv('STARTUP_DELAY',5)}"),
-        ("Nginx json map", True if 'NGINX_LOG_JSON_MAP' in os.environ else False),
+        ("Nginx json map", True if "NGINX_LOG_JSON_MAP" in os.environ else False),
     ]
     return resume
+
 
 def reload_nginx():
     CUSTOM_CMD = os.getenv("RELOAD_NGINX_CUSTOM_CMD", None)
