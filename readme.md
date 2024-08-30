@@ -1,5 +1,7 @@
 # httpE2Ban for Nginx
 This is an simple nginx add-on that block connections based on http status. I know that exists a lot of tools like this but I made for my own to be lightier and also, to be as an "first shield" for applications running behind Nginx. The configuration should be simple and mainly you should be using Nginx on a docker container, but also works for a common Nginx instalation. *Ps: I could do an Nginx with httpE2Ban running inside, but who is going to trust something like this? lol.*
+![loki-query](images/loki-filter.png)
+^As you can see, the rate of bots trying to send malicious requests to my web server is very high, even though my website is not well-known.
 
 ## Validation
 I've tested on these configurations.
