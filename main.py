@@ -146,6 +146,7 @@ def show_resume():
                 else "None"
             ),
         ),
+        ("Block TTL", f"{os.getenv('BLOCK_TTL', 'indefinitely')}"),
         ("Startup delay", f"{int(os.getenv('STARTUP_DELAY', 5))}"),
         ("Nginx json map", True if "NGINX_LOG_JSON_MAP" in os.environ else False),
     ]
@@ -217,7 +218,8 @@ def block_ip(ip):
             reload_nginx()
         except Exception as e:
             logging.error(f"Some error occur while trying to block IP: '{ip}', {e}")
-    logging.debug(f"{ip} already on ban file")
+    else:
+        logging.debug(f"{ip} already on ban file")
 
 def load_error_config():
     policy = os.getenv("POLICY", None)
