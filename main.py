@@ -201,8 +201,10 @@ def is_ip_on_file(ip):
 
 
 def block_ip(ip):
+    logging.debug(f"Starting block ip sequence for {ip}")
     epoch_time = int(time.time())
     if is_ip_on_file(ip) == False:
+        logging.debug(f"IP {ip} not in ban file")
         try:
             with open(os.getenv("BANNED_CONF_FILE", "banned.conf"), "r") as banned_file:
                 new_content = banned_file.readlines()
@@ -215,7 +217,7 @@ def block_ip(ip):
             reload_nginx()
         except Exception as e:
             logging.error(f"Some error occur while trying to block IP: '{ip}', {e}")
-
+    logging.debug(f"{ip} already on ban file")
 
 def load_error_config():
     policy = os.getenv("POLICY", None)
