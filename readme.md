@@ -146,9 +146,6 @@ export BANNED_CONF_FILE="$HOME/nginx-httpE2Ban/banned.conf"
 | BLOCK_TTL | 7200 | No | The time the IP will be blocked. If not configured, the `block is permanent`. |
 | RUN_CMD_AFTER_BAN | sshpass[...] | No | A custom command to run after block ip. |
 
-
-
-
 ## How to map log format when using json
 If your log format is not the default format that Nginx provide and you are using a json format, you can still use httpE2Ban, you just need to map some information that httpE2Ban needs. Your log should not contain nothing besides json and should start and finish with brackets. **If you are not using one of these formats (default/json) the only way to make it work is change the source code and rebuild the httpE2Ban.**
 
