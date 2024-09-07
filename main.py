@@ -226,9 +226,9 @@ def block_ip(ip):
                 banned_file.writelines(new_content)
                 logging.info(f"IP: {ip} successfuly banned for {os.getenv('BLOCK_TTL', 'indefinitely')} secods")
             reload_nginx()
-            run_cmd_after_ban(ip)
         except Exception as e:
             logging.error(f"Some error occur while trying to block IP: '{ip}', {e}")
+        run_cmd_after_ban(ip)
     else:
         logging.debug(f"{ip} already on ban file")
 
