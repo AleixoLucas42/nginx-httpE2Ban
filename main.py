@@ -200,6 +200,9 @@ def is_ip_on_file(ip):
         logging.error(f"Failed to check ban file, {e}")
     return False
 
+def run_cmd_after_ban():
+    if "RUN_CMD_AFTER_BAN" in os.environ:
+        subprocess.run(os.environ["RUN_CMD_AFTER_BAN"].split(), check=True)
 
 def block_ip(ip):
     logging.debug(f"Starting block ip sequence for {ip}")
@@ -216,6 +219,7 @@ def block_ip(ip):
                 banned_file.writelines(new_content)
                 logging.info(f"IP: {ip} successfuly banned for {os.getenv('BLOCK_TTL', 'indefinitely')} secods")
             reload_nginx()
+            run_cmd_after_ban()
         except Exception as e:
             logging.error(f"Some error occur while trying to block IP: '{ip}', {e}")
     else:
