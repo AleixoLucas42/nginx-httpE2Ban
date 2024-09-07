@@ -202,6 +202,7 @@ def is_ip_on_file(ip):
 
 def run_cmd_after_ban(ip):
     if "RUN_CMD_AFTER_BAN" in os.environ:
+        logging.info("Running command after ban")
         logging.debug(f"Running: echo '{ip}' | read IP; {os.environ['RUN_CMD_AFTER_BAN'].split()}")
         try:
             subprocess.run(f"echo '{ip}' | read IP; {os.environ['RUN_CMD_AFTER_BAN'].split()}", check=True)
