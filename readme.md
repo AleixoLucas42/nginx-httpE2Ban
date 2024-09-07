@@ -144,6 +144,9 @@ export BANNED_CONF_FILE="$HOME/nginx-httpE2Ban/banned.conf"
 | NGINX_LOG_JSON_MAP | {"ip_address":"remote_addr"...} | No | If your log format is not in default and you are using json as log, this is an workaround to use httpE2Ban. |
 | BLOCK_TTL_CHECK_DELAY | 60 | No | In seconds, how long to wait to unban an IP. Default is `60`. |
 | BLOCK_TTL | 7200 | No | The time the IP will be blocked. If not configured, the `block is permanent`. |
+| RUN_CMD_AFTER_BAN | sshpass[...] | No | A custom command to run after block ip, the ip is under $IP variable. |
+
+
 
 
 ## How to map log format when using json
