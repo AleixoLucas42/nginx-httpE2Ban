@@ -206,6 +206,7 @@ def run_cmd_after_ban(ip):
         logging.debug(f"Running: echo '{ip}' | read IP; {os.environ['RUN_CMD_AFTER_BAN'].split()}")
         try:
             subprocess.run(f"echo '{ip}' | read IP; {os.environ['RUN_CMD_AFTER_BAN'].split()}", check=True)
+            logging.info("Running command after ban done")
         except subprocess.CalledProcessError as e:
             logging.error(f"There was an error running {os.environ["RUN_CMD_AFTER_BAN"].split()}, {e}")
 
