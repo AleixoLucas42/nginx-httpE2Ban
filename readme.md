@@ -20,7 +20,7 @@ You have to set an configuration policy, that says how much http code an client 
 ```
 In this example, on first statement, a client can throw only ten 404 http errors over 60 seconds; on second, only five 403 http error over 60 seconds and so on. Simple, right?
 
-On your `nginx.conf` you'll have to include the [ban file](banned.conf) and a block condition, for exampleS:
+On your `nginx.conf` you'll have to include the [ban file](banned.conf) and a block condition, for example:
 ```lua
 ...
 include /etc/nginx/conf.d/banned.conf;
@@ -36,7 +36,7 @@ Finally, the httpE2Ban need to access the Nginx access.log (assuming you're usin
 (Using docker, nginx access logs is being showed in httpE2Ban container log)
 
 ## Setup
-For setup you have to do **three steps:**
+To setup you have to do **three steps:**
 
 - Configure an [json policy file](policy.json).
 - Nginx configuration
@@ -177,7 +177,7 @@ NGINX_LOG_JSON_MAP={"ip_address":"remote_addr","datetime":"time_local","request"
 - Yes, you can run Python or use the binary file on [releases](https://github.com/AleixoLucas42/nginx-httpE2Ban/releases)
 ### Where is the Nginx container logs?
 - The requests logs are redirected to httpE2Ban container, the same log that should out in Nginx container, now is on httpE2Ban container. Why? Because I can't make work in both yet.
-### Can I use if my Nginx log format is different from default?
+### Can I use even if my Nginx log format is different from default?
 - You can just use if your log format is default or in json format, without anything else. Just read the 'how to map json' section and you'll be fine.
 ### Why not use fail2ban or another similar know tool?
 - You can use, maybe you should use, the point of httpE2Ban is the easy way to make work, i'm not doing to replace any tool, just developing to learn.
